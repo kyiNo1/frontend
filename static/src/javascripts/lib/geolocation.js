@@ -3,6 +3,12 @@ import fetchJSON from 'lib/fetch-json';
 import config from 'lib/config';
 import { local as storage } from 'lib/storage';
 
+type Currency = {
+    // https://www.iban.com/currency-codes.html
+    isoCode: string,
+    symbol: string,
+};
+
 const storageKey = 'gu.geolocation';
 const editionToGeolocationMap = {
     UK: 'GB',
@@ -136,7 +142,30 @@ const isInEurope = (): boolean => {
     return europeCountryCodes.includes(countryCode) || countryCode === 'GB';
 };
 
-// Exposed for unit testing
+const getCurrency = (location: string): Currency => {
+    const region = getSupporterPaymentRegion(location);
+
+    const currency = (isoCode: string, symbol: string): Currency => ({
+        isoCode,
+        symbol,
+    });
+
+    switch (region) {
+        case 'GB':
+            return currency('GBP', '£');
+        case 'US':
+            return currency('USD', '$');
+        case 'AU':
+            return currency('AUD', 'AUD$');
+        case 'CA':
+            return currency('CAD', 'CAD$');
+        case 'EU':
+            return currency('EUR', '€');
+        default:
+            return currency('USD', '$');
+    }
+};
+
 export {
     get,
     getSupporterPaymentRegion,
@@ -144,4 +173,5 @@ export {
     isInEurope,
     init,
     setGeolocation,
+    getCurrency,
 };
