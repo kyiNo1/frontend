@@ -21,8 +21,6 @@ define([
     ophan,
     iframeTemplate
 ) {
-    //var readersCurrency = geolocation.getCurrency(geolocation.getSync());
-
     return contributionsUtilities.makeABTest({
         id: 'AcquisitionsEpicPaypalPayInEpic',
         campaignId: 'epic_pay_in_epic',
@@ -55,9 +53,16 @@ define([
                     })
                 },
 
-                test: function(render) {
+                test: function(render, variant) {
+                    window.addEventListener('message', function(event) {
+                        if (event.data.type === 'CONTEXT_REQUEST') {
+                            var iframe = document.getElementById(variant.options.iframeId);
+                            iframe.contentWindow.postMessage({ type: 'PAGE_CONTEXT', pageContext: { a: 1 }}, '*');
+                        }
+                    });
+
                     loadScript.loadScript('https://www.paypalobjects.com/api/checkout.js')
-                        .then(function() { render(); });
+                        .then(function() { return render(); });
                 },
 
                 usesIframe: true
