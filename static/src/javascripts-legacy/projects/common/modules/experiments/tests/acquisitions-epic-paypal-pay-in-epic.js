@@ -24,14 +24,14 @@ define([
     //var readersCurrency = geolocation.getCurrency(geolocation.getSync());
 
     return contributionsUtilities.makeABTest({
-        id: 'AcquisitionsEpicPayInEpic',
+        id: 'AcquisitionsEpicPaypalPayInEpic',
         campaignId: 'epic_pay_in_epic',
 
         start: '2017-06-19',
         expiry: '2018-07-20',
 
         author: 'Guy Dawson & Sam Desborough',
-        description: 'Test whether letting readers pay in-Epic will lead to a higher conversion rate',
+        description: 'Test whether letting readers pay in-Epic with Paypal will lead to a higher conversion rate',
         successMeasure: 'Conversion rate',
         idealOutcome: 'The pay in-Epic variant smashes the control out of the park',
         audienceCriteria: 'All',

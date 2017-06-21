@@ -192,9 +192,9 @@ trait ABTestSwitches {
 
   Switch(
     ABTests,
-    "ab-acquisitions-epic-pay-in-epic",
+    "ab-acquisitions-epic-paypal-pay-in-epic",
     "Test whether allowing readers to pay in-Epic increases the conversion rate.",
-    owners = Seq(Owner.withGithub("Mullefa")),
+    owners = Seq(Owner.withGithub("Mullefa"), Owner.withGithub("desbo")),
     safeState = On,
     sellByDate = new LocalDate(2017, 7, 20),
     exposeClientSide = true
