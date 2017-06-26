@@ -21,6 +21,16 @@ define([
     ophan,
     iframeTemplate
 ) {
+    function pageContext(intCmp) {
+        return {
+            region: geolocation.getSupporterPaymentRegion(geolocation.getSync()),
+            intCmp: intCmp,
+            refererPageviewId: config.ophan.pageViewId,
+            refererUrl: document.location.href,
+            ophanBrowserId: config.ophan.browserId
+        };
+    }
+
     return contributionsUtilities.makeABTest({
         id: 'AcquisitionsEpicPaypalPayInEpic',
         campaignId: 'epic_pay_in_epic',
@@ -55,9 +65,15 @@ define([
 
                 test: function(render, variant) {
                     window.addEventListener('message', function(event) {
-                        if (event.data.type === 'CONTEXT_REQUEST') {
+                        if (event.data.type === 'PAGE_CONTEXT_REQUEST') {
                             var iframe = document.getElementById(variant.options.iframeId);
-                            iframe.contentWindow.postMessage({ type: 'PAGE_CONTEXT', pageContext: { a: 1 }}, '*');
+
+                            if (iframe) {
+                                iframe.contentWindow.postMessage({
+                                    type: 'PAGE_CONTEXT',
+                                    pageContext: pageContext(variant.options.campaignCode)
+                                }, '*');
+                            }
                         }
                     });
 
