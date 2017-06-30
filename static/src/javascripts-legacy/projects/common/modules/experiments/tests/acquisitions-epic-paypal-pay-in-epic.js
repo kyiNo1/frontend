@@ -8,7 +8,8 @@ define([
     'common/modules/commercial/acquisitions-copy',
     'common/modules/commercial/contributions-utilities',
     'ophan/ng',
-    'raw-loader!common/views/acquisitions-epic-iframe.html'
+    'raw-loader!common/views/acquisitions-epic-iframe.html',
+    'raw-loader!common/views/acquisitions-epic-paypal-pay-in-epic-control.html'
 ], function (
     template,
     config,
@@ -19,7 +20,8 @@ define([
     acquisitionsCopy,
     contributionsUtilities,
     ophan,
-    iframeTemplate
+    iframeTemplate,
+    paypalPayInEpicControlTemplate
 ) {
 
     function createFormData(region, amounts) {
@@ -100,6 +102,18 @@ define([
         }
     }
 
+    function createControl() {
+        return {
+            id: 'control',
+
+            template: function (variant) {
+                return template(paypalPayInEpicControlTemplate, {
+                    contributionUrl: variant.options.contributeURL
+                })
+            }
+        }
+    }
+
     return contributionsUtilities.makeABTest({
         id: 'AcquisitionsEpicPaypalPayInEpic',
         campaignId: 'epic_pay_in_epic',
@@ -117,9 +131,7 @@ define([
 
         variants: [
 
-            {
-                id: 'control',
-            },
+            createControl(),
 
             createVariant('default_amounts', {
                 'GB': [25, 50, 100, 250],
