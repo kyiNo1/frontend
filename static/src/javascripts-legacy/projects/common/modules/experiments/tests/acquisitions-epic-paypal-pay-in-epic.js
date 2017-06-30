@@ -21,14 +21,83 @@ define([
     ophan,
     iframeTemplate
 ) {
-    function pageContext(intCmp) {
+
+    function createFormData(region, amounts) {
+        var formDataByRegion =  {
+            'GB': {
+                amounts: amounts['GB'],
+                symbol: '£',
+                countryGroup: 'uk'
+            },
+            'EU': {
+                amounts:  amounts['EU'],
+                symbol: '€',
+                countryGroup: 'eu',
+            },
+            'US': {
+                amounts:  amounts['US'],
+                symbol: '$',
+                countryGroup: 'us',
+            },
+            'AU': {
+                amounts:  amounts['AU'],
+                symbol: '$',
+                countryGroup: 'au'
+            }
+        };
+
+        // INT and CA redirect to UK in contributions frontend.
+        return formDataByRegion[region] || formDataByRegion['GB']
+    }
+
+    function pageContext(campaignCode, amounts) {
+        var region = geolocation.getSupporterPaymentRegion(geolocation.getSync());
+
         return {
-            region: geolocation.getSupporterPaymentRegion(geolocation.getSync()),
-            intCmp: intCmp,
+            intCmp: campaignCode,
             refererPageviewId: config.ophan.pageViewId,
             refererUrl: document.location.href,
-            ophanBrowserId: config.ophan.browserId
+            ophanBrowserId: config.ophan.browserId,
+            formData: createFormData(region, amounts)
         };
+    }
+
+    function createVariant(id, amounts) {
+        return {
+            id: id,
+
+            isUnlimited: true,
+
+            template: function (variant) {
+                return template(iframeTemplate, {
+                    componentName: variant.options.componentName,
+                    id: variant.options.iframeId,
+                    iframeUrl: 'https://contribute.thegulocal.com/components/epic/inline-payment',
+                })
+            },
+
+            test: function (render, variant) {
+                window.addEventListener('message', function (event) {
+                    if (event.data.type === 'PAGE_CONTEXT_REQUEST') {
+                        var iframe = document.getElementById(variant.options.iframeId);
+
+                        if (iframe) {
+                            iframe.contentWindow.postMessage({
+                                type: 'PAGE_CONTEXT',
+                                pageContext: pageContext(variant.options.campaignCode, amounts)
+                            }, '*');
+                        }
+                    }
+                });
+
+                loadScript.loadScript('https://www.paypalobjects.com/api/checkout.js')
+                    .then(function () {
+                        return render();
+                    });
+            },
+
+            usesIframe: true
+        }
     }
 
     return contributionsUtilities.makeABTest({
@@ -47,42 +116,24 @@ define([
         audienceOffset: 0,
 
         variants: [
+
             {
                 id: 'control',
             },
-            {
-                id: 'pay_in_epic',
 
-                isUnlimited: true,
+            createVariant('default_amounts', {
+                'GB': [25, 50, 100, 250],
+                'EU': [25, 50, 100, 250],
+                'US': [25, 50, 100, 250],
+                'AU': [50, 100, 250, 500]
+            }),
 
-                template: function(variant) {
-                    return template(iframeTemplate, {
-                        componentName: variant.options.componentName,
-                        id: variant.options.iframeId,
-                        iframeUrl: 'http://localhost:9111/components/epic/inline-payment',
-                    })
-                },
-
-                test: function(render, variant) {
-                    window.addEventListener('message', function(event) {
-                        if (event.data.type === 'PAGE_CONTEXT_REQUEST') {
-                            var iframe = document.getElementById(variant.options.iframeId);
-
-                            if (iframe) {
-                                iframe.contentWindow.postMessage({
-                                    type: 'PAGE_CONTEXT',
-                                    pageContext: pageContext(variant.options.campaignCode)
-                                }, '*');
-                            }
-                        }
-                    });
-
-                    loadScript.loadScript('https://www.paypalobjects.com/api/checkout.js')
-                        .then(function() { return render(); });
-                },
-
-                usesIframe: true
-            }
+            createVariant('low_amounts', {
+                'GB': [2, 5, 10, 25],
+                'EU': [2, 5, 10, 25],
+                'US': [2, 5, 10, 25],
+                'AU': [5, 10, 25, 50]
+            })
         ]
     });
 });

@@ -16,7 +16,7 @@ import acquisitionsEpicAlwaysAskElection from 'common/modules/experiments/tests/
 import acquisitionsEpicThankYou from 'common/modules/experiments/tests/acquisitions-epic-thank-you';
 import acquisitionsThisLandSeries from 'common/modules/experiments/tests/acquisitions-this-land-series';
 import epicForBrexitCohort from 'common/modules/experiments/tests/epic-for-brexit-cohort';
-import payInEpic from 'common/modules/experiments/tests/acquisitions-epic-pay-in-epic';
+import payInEpic from 'common/modules/experiments/tests/acquisitions-epic-paypal-pay-in-epic';
 
 /**
  * acquisition tests in priority order (highest to lowest)
