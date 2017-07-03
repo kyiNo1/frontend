@@ -22,7 +22,7 @@ import payInEpic from 'common/modules/experiments/tests/acquisitions-epic-paypal
  * acquisition tests in priority order (highest to lowest)
  */
 const tests = [
-    payInEpic, // FIXME
+    payInEpic,
     alwaysAsk,
     acquisitionsThisLandSeries,
     bundlePriceTest1,
