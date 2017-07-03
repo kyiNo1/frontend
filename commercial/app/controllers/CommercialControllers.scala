@@ -30,4 +30,5 @@ trait CommercialControllers {
   lazy val travelOffersController = wire[TravelOffersController]
   lazy val trafficDriverController = wire[TrafficDriverController]
   lazy val piggybackPixelController = wire[PiggybackPixelController]
+  lazy val auditor = wire[Auditor]
 }
