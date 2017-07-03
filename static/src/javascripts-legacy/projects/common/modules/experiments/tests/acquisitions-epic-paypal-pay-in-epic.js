@@ -126,7 +126,7 @@ define([
         campaignId: 'epic_pay_in_epic',
 
         start: '2017-06-19',
-        expiry: '2018-07-20',
+        expiry: '2018-08-01',
 
         author: 'Guy Dawson & Sam Desborough',
         description: 'Test whether letting readers pay in-Epic with Paypal will lead to a higher conversion rate',
