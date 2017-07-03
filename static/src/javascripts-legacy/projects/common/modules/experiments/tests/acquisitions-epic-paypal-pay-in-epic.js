@@ -64,6 +64,15 @@ define([
         };
     }
 
+    function getIframeUrl() {
+        var isDev = config.page.isDev || false;
+        var baseUrl = 'https://contribute.theguardian.com';
+        if (isDev) {
+            baseUrl = 'https://contribute.thegulocal.com';
+        }
+        return baseUrl + '/components/epic/inline-payment';
+    }
+
     function createVariant(id, amounts) {
         return {
             id: id,
@@ -74,7 +83,7 @@ define([
                 return template(iframeTemplate, {
                     componentName: variant.options.componentName,
                     id: variant.options.iframeId,
-                    iframeUrl: 'https://contribute.thegulocal.com/components/epic/inline-payment',
+                    iframeUrl: getIframeUrl(),
                 })
             },
 
@@ -93,9 +102,7 @@ define([
                 });
 
                 loadScript.loadScript('https://www.paypalobjects.com/api/checkout.js')
-                    .then(function () {
-                        return render();
-                    });
+                    .then(function () { return render(); });
             },
 
             usesIframe: true
@@ -108,7 +115,7 @@ define([
 
             template: function (variant) {
                 return template(paypalPayInEpicControlTemplate, {
-                    contributionUrl: variant.options.contributeURL
+                    contributionUrl: variant.options.contributeURL + '&disableStripe=true'
                 })
             }
         }
