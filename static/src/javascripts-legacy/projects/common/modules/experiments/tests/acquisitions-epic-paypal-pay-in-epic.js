@@ -133,8 +133,8 @@ define([
         successMeasure: 'Conversion rate',
         idealOutcome: 'The pay in-Epic variant smashes the control out of the park',
         audienceCriteria: 'All',
-        audience: 0.1,
-        audienceOffset: 0,
+        audience: 0.2,
+        audienceOffset: 0.1,
 
         variants: [
 
